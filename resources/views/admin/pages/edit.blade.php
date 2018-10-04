@@ -1,7 +1,7 @@
 @extends('templates.admin.master.layout')
 
 @section('seo-title')
-<title>Edit page {{ config('app.seo-separator') }} {{ config('app.name') }}</title>
+<title>Edit page {{ $page->title }} {{ config('app.seo-separator') }} {{ config('app.name') }}</title>
 @endsection
 
 @section('custom-css')
@@ -11,7 +11,7 @@
 @section('content')
 <div class="row">
     <div class="col-lg-12">
-        <h1 class="page-header">Edit page - {{ $page->title }}</h1>
+        <h1 class="page-header">Edit page: {{ $page->title }}</h1>
     </div>
     <!-- /.col-lg-12 -->
 </div>
@@ -24,6 +24,23 @@
                     <div class="col-lg-12">
                         <form method="post" action="" enctype="multipart/form-data">
                             @csrf
+                            
+                            <div class="form-group{{ $errors->has('page_id') ? ' has-error' : '' }}">
+                                <label>Parent page</label>
+                                <select class="form-control" name="page_id">
+                                    <option value="0">-- Without parent (level 0) --</option>
+                                    @if(count($mainPages) > 0)
+                                        @foreach($mainPages as $value)
+                                        <option value="{{ $value->id }}" @if( old('page_id', $page->page_id) == $value->id ) selected @endif>{{ $value->title }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                                
+                                @if ($errors->has('page_id'))
+                                    <p class="help-block text-danger">{{ $errors->first('page_id') }}</p>
+                                @endif
+                            </div>
+                            
                             <div class="form-group{{ $errors->has('title') ? ' has-error' : '' }}">
                                 <label>Title</label>
                                 <input class="form-control" type="text" name="title" value="{{ old('title', $page->title) }}">
@@ -49,11 +66,11 @@
                                 @endif
                             </div>
                             <div class="form-group">
-                                <label>Current image</label><br>
-                                <img src="{{ $page->image }}" height="200px" width="200px">
+                                <label>Current image</label>
+                                <img src='{{ $page->image }}'>
                             </div>
                             <div class="form-group{{ $errors->has('image') ? ' has-error' : '' }}">
-                                <label>New image</label>
+                                <label>New image (if you want)</label>
                                 <input type="file" name='image'>
                                 
                                 @if ($errors->has('image'))
@@ -107,7 +124,7 @@
                                 <label class="radio-inline">
                                     <input type="radio" name="contact_form" value="0" @if( old('contact_form', $page->contact_form) == 0 ) checked @endif>No
                                 </label>
-                                                                
+                                
                                 @if ($errors->has('contact_form'))
                                     <p class="help-block text-danger">{{ $errors->first('contact_form') }}</p>
                                 @endif

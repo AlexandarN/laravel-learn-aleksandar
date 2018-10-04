@@ -32,15 +32,33 @@ Route::any('/users/change-password/{user}', 'UsersController@changePassword')->n
 /* USERS ROUTES - END */
 
 /* PAGES ROUTES - START */
-Route::get('/pages', 'PagesController@index')->name('pages');
-
 Route::any('/pages/create', 'PagesController@create')->name('pages-create');
+
+Route::get('/pages/{page?}', 'PagesController@index')->name('pages');
 
 Route::any('/pages/edit/{page}', 'PagesController@edit')->name('pages-edit');
 
+Route::get('/pages/activate/{page}', 'PagesController@activate')->name('pages-active');
+
 Route::get('/pages/delete/{page}', 'PagesController@delete')->name('pages-delete');
 
+Route::any('/lamborghini-webshop/{page}/{slug}', 'FrontendController@page')->name('pages-preview');
+
+Route::post('/pages/neworder', 'PagesController@newOrder')->name('pages-neworder');
 /* PAGES ROUTES - END */
 
+/* PRODUCTS ROUTES - START */
 
+Route::view('/shop', 'frontend.products.shop');
 
+Route::view('/products', 'frontend.products.products');
+
+Route::view('/product', 'frontend.products.product');
+
+Route::view('/cart', 'frontend.products.cart');
+
+Route::view('/checkout', 'frontend.products.checkout');
+
+Route::view('/thankyou', 'frontend.products.thankyou');
+
+/* PRODUCTS ROUTES - END */

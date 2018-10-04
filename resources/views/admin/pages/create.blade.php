@@ -24,26 +24,23 @@
                     <div class="col-lg-12">
                         <form method="post" action="" enctype="multipart/form-data">
                             @csrf
-                            <div class="form-group">
-                                @if(count($parentPage) > 0)
-                                <select name="page_id" class="form-control c-square c-theme">
-                                    <option value="">--- Choose parent page ---</option>
-                                    @foreach($parentPage as $value)
-                                    <option value="{{ $value->id }}" @if(old('page_id') == $value->id) selected @endif>{{ $value->title }}</option>
-                                    @endforeach
+                            
+                            <div class="form-group{{ $errors->has('page_id') ? ' has-error' : '' }}">
+                                <label>Parent page</label>
+                                <select class="form-control" name="page_id">
+                                    <option value="0">-- Without parent (level 0) --</option>
+                                    @if(count($mainPages) > 0)
+                                        @foreach($mainPages as $value)
+                                        <option value="{{ $value->id }}" @if( old('page_id', request('page_id')) == $value->id ) selected @endif>{{ $value->title }}</option>
+                                        @endforeach
+                                    @endif
                                 </select>
-                                @endif
-
-                                @if($errors->has('page_id'))
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                            @foreach($errors->get('page_id') as $error)
-                                                <li>{{ $error }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
+                                
+                                @if ($errors->has('page_id'))
+                                    <p class="help-block text-danger">{{ $errors->first('page_id') }}</p>
                                 @endif
                             </div>
+                            
                             <div class="form-group{{ $errors->has('title') ? ' has-error' : '' }}">
                                 <label>Title</label>
                                 <input class="form-control" type="text" name="title" value="{{ old('title') }}">
